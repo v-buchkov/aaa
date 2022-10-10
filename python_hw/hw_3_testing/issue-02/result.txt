@@ -1,0 +1,33 @@
+Trying:
+    encode('SOS')
+Expecting:
+    '... --- ...'
+ok
+Trying:
+    encode("Not caps")
+Expecting:
+    Traceback (most recent call last):
+      File "/Library/Frameworks/Python.framework/Versions/3.10/lib/python3.10/doctest.py", line 1346, in __run
+        exec(compile(example.source, filename, "single",
+      File "<doctest morse.encode[1]>", line 1, in <module>
+        encode("Hahaha\n")
+      File "/Users/buchkovv/PycharmProjects/avito_analytics_academy/python_hw/hw_3_testing/morse.py", line 43, in encode
+        encoded_signs = [
+      File "/Users/buchkovv/PycharmProjects/avito_analytics_academy/python_hw/hw_3_testing/morse.py", line 44, in <listcomp>
+        LETTER_TO_MORSE[letter] for letter in message
+    KeyError: 'o'
+ok
+Trying:
+    encode("SPECIALSYMBOL\n")
+Expecting:
+    Traceback (most recent call last):
+    KeyError
+ok
+2 items had no tests:
+    morse
+    morse.decode
+1 items passed all tests:
+   3 tests in morse.encode
+3 tests in 3 items.
+3 passed and 0 failed.
+Test passed.
