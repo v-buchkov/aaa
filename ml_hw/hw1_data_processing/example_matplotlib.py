@@ -1,5 +1,5 @@
-import example_matplotlib.pyplot as plt
-import example_numpy as np
+import matplotlib.pyplot as plt
+import numpy as np
 import datetime as dt
 
 np.random.seed(1)

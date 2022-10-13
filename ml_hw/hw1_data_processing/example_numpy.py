@@ -25,7 +25,7 @@
 """ Task 2"""
 
 
-import example_numpy as np
+import numpy as np
 
 
 def solution():
