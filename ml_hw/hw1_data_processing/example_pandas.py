@@ -1,5 +1,5 @@
-import numpy as np
-import pandas as pd
+import example_numpy as np
+import example_pandas as pd
 import big_o
 
 """Task 1"""
