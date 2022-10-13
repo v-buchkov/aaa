@@ -26,21 +26,51 @@ def fit_transform(*args: str) -> List[Tuple[str, List[int]]]:
 
 
 class TestOneHotEncoder(unittest.TestCase):
+
+    # Check for standard output
     def test_standard(self):
-        res = Pokemon(name='Bulbasaur', poketype='grass').__str__()
-        exp = 'Bulbasaur/grass'
-        self.assertEqual(res, exp)
+        res = fit_transform(['Manchester United',
+                             'Everton',
+                             'Nottingham Forest',
+                             'Manchester United',
+                             'Leeds United'])
+        exp = [('Manchester United', [0, 0, 0, 1]),
+               ('Everton', [0, 0, 1, 0]),
+               ('Nottingham Forest', [0, 1, 0, 0]),
+               ('Manchester United', [0, 0, 0, 1]),
+               ('Leeds United', [1, 0, 0, 0])]
+        self.assertListEqual(res, exp)
 
-    def test_special_symbols(self):
-        res = Pokemon(name='Pikachu', poketype='electric\r\npower').__str__()
-        exp = 'Pikachu/electric\r\npower'
-        self.assertEqual(res, exp)
+    # Check that TypeError is raised, when no argument is passed
+    def test_no_argument(self):
+        self.assertRaises(TypeError, lambda: fit_transform())
 
-    def test_with_formula(self):
-        res = Pokemon(name='Squirtle', poketype='water' * 30).__str__()
-        exp = 'Squirtle/waterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwater' \
-              'waterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwater'
-        self.assertEqual(res, exp)
+    # Check that each vector consists only of 1 and 0s
+    def test_vector_binary(self):
+        self.assertNotIn(2, [item[1] for item in fit_transform(['Metallica',
+                                                                'Black Sabbath',
+                                                                'Iron Maiden',
+                                                                'Iron Maiden',
+                                                                'Metallica'])])
+
+    # Check that in each vector 1 is met only once
+    def test_one_is_met_only_once(self):
+        input_data = ['Metallica',
+                      'Black Sabbath',
+                      'Iron Maiden',
+                      'Iron Maiden',
+                      'Metallica']
+        res = [item[1] for item in fit_transform(input_data)]
+        for r in res:
+            self.assertTrue(sorted(r) == [0] * (len(set(input_data)) - 1) + [1])
+
+    # Check that no exception is raised for list of integers (already pre-defined categories for ML algo)
+    def test_no_exception(self):
+        self.assertIsInstance(fit_transform([1, 2, 3, 6]), list)
+
+    # Check that list of lists raises TypeError (unhashable)
+    def test_exception_with_list(self):
+        self.assertRaises(TypeError, lambda: fit_transform(([4, 7, 8], 6, 7, 0, 2)))
 
 
 if __name__ == '__main__':

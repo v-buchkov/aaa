@@ -1,4 +1,5 @@
 """Morse Code Translator"""
+import pytest
 
 LETTER_TO_MORSE = {
     'A': '.-', 'B': '-...', 'C': '-.-.',
@@ -46,10 +47,27 @@ def decode(morse_message: str) -> str:
     return ''.join(decoded_letters)
 
 
+@pytest.mark.parametrize("message_example,expected_output",
+                         [('... .. -. --. .-.. . .-- --- .-. -..',
+                           'SINGLEWORD'),
+                          ('.-- .. - ....   ... .--. .- -.-. .',
+                           'WITHSPACE'),
+                          ('-.. .. ...- .. -.. . -.. -..-. -... -.-- -.--. ... -.-- -- -... --- .-.. ... -.--.-',
+                           'DIVIDED/BY(SYMBOLS)'),
+                          ('.-- .. - .... -....- .... -.-- .--. .... . -.',
+                           'WITH-HYPHEN'),
+                          ('.- .-.. .--. .... .- -. ..- -- . .-. .. -.-.   .---- ..--- .---- ..---',
+                           'ALPHANUMERIC1212'),
+                          ('-----',
+                           '0')])
+def test_decode(message_example: str, expected_output: str):
+    result = decode(message_example)
+    assert result == expected_output, f'input: {message_example}, expected: {expected_output}, got: {result}'
+
+
 if __name__ == '__main__':
     morse_msg = '-- .- .. -....- .--. -.-- - .... --- -. -....- ..--- ----- .---- ----.'
     decoded_msg = decode(morse_msg)
     print(decoded_msg)
-    print(encode(''))
 
     assert morse_msg == encode(decoded_msg)

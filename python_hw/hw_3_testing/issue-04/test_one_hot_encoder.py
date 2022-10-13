@@ -1,4 +1,4 @@
-import unittest
+import pytest
 from typing import List, Tuple
 
 
@@ -25,49 +25,61 @@ def fit_transform(*args: str) -> List[Tuple[str, List[int]]]:
     return transformed_rows
 
 
-class TestOneHotEncoder(unittest.TestCase):
+@pytest.fixture
+def english_football_teams():
+    return ['Manchester United', 'Everton', 'Nottingham Forest', 'Manchester United', 'Leeds United']
 
-    # Check for standard output
-    def test_standard(self):
-        res = fit_transform(['Manchester United',
-                             'Everton',
-                             'Nottingham Forest',
-                             'Manchester United',
-                             'Leeds United'])
-        exp = [('Manchester United', [0, 0, 0, 1]),
-               ('Everton', [0, 0, 1, 0]),
-               ('Nottingham Forest', [0, 1, 0, 0]),
-               ('Manchester United', [0, 0, 0, 1]),
-               ('Leeds United', [1, 0, 0, 0])]
-        self.assertListEqual(res, exp)
 
-    # Check that TypeError is raised, when no argument is passed
-    def test_no_argument(self):
-        self.assertRaises(TypeError, lambda: fit_transform())
+@pytest.fixture
+def heavy_metal_bands():
+    return ['Metallica', 'Black Sabbath', 'Iron Maiden', 'Iron Maiden', 'Metallica']
 
-    # Check that each vector consists only of 1 and 0s
-    def test_vector_binary(self):
-        self.assertNotIn(2, [item[1] for item in fit_transform(['Metallica',
-                                                                'Black Sabbath',
-                                                                'Iron Maiden',
-                                                                'Iron Maiden',
-                                                                'Metallica'])])
 
-    def test_one_is_met_only_once(self):
-        input_data = ['Metallica',
-                      'Black Sabbath',
-                      'Iron Maiden',
-                      'Iron Maiden',
-                      'Metallica']
-        res = [item[1] for item in fit_transform(input_data)]
-        for r in res:
-            self.assertTrue(sorted(r) == [0] * (len(set(input_data)) - 1) + [1])
+# Check for standard output (using fixture)
+def test_standard(english_football_teams):
+    input_data = english_football_teams
+    res = fit_transform(input_data)
+    exp = [('Manchester United', [0, 0, 0, 1]),
+           ('Everton', [0, 0, 1, 0]),
+           ('Nottingham Forest', [0, 1, 0, 0]),
+           ('Manchester United', [0, 0, 0, 1]),
+           ('Leeds United', [1, 0, 0, 0])]
+    assert res == exp, f'input: {input_data}, expected: {exp}, got: {res}'
 
-    def test_no_exception(self):
-        self.assertIsInstance(fit_transform([1, 2, 3, 6]), list)
 
-    def test_exception_with_list(self):
-        self.assertRaises(TypeError, lambda: fit_transform(([4, 7, 8], 6, 7, 0, 2)))
+# Check that TypeError is raised, when no argument is passed
+def test_no_argument():
+    with pytest.raises(TypeError):
+        fit_transform()
+
+
+# Check that each vector consists only of 1 and 0s (using faker)
+def test_vector_binary(faker):
+    input_data = [faker.name() for i in range(10)]
+    print(input_data)
+    assert all(i <= 1 for i in
+               sum([item[1] for item in fit_transform(input_data)], [])), f'input: {input_data}, ' \
+                                                                          f'some vector value is larger than 1'
+
+
+# Check that in each vector 1 is met only once (using fixture)
+def test_one_is_met_only_once(heavy_metal_bands):
+    input_data = heavy_metal_bands
+    res = [item[1] for item in fit_transform(input_data)]
+    for r in res:
+        assert sorted(r) == [0] * (len(set(input_data)) - 1) + [1], f'input: {input_data}, met several 1s in vector'
+
+
+# Check that no exception is raised for list of integers (already pre-defined categories for ML algo)
+def test_no_exception():
+    input_data = [1, 2, 3, 6]
+    assert type(fit_transform(input_data)) == list, f'input: {input_data}, incorrect type returned (not list)'
+
+
+# Check that list of lists raises TypeError (unhashable)
+def test_exception_with_list():
+    with pytest.raises(TypeError):
+        fit_transform(([4, 7, 8], 6, 7, 0, 2))
 
 
 if __name__ == '__main__':

@@ -6,7 +6,8 @@ def count_letters(word: str) -> tuple[int, int]:
     return (lt := sum(1 for x in word if x.isalpha()), len(word) - lt)
 
 
-def test_count_letters():
+@pytest.mark.parametrize()
+def test_count_letters_param(word: str, exp: tuple[int, int], not_exp: tuple[int, int]):
     word = 'Hello world!'
     res = count_letters(word)
     exp = (10, 2)

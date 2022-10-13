@@ -1,4 +1,3 @@
-# ISSUE-02
+# ISSUE-03
 ### Команда для запуска:
-
-> python -m pytest test_morse.py > result.txt
+> python -m unittest test_one_hot_encoder.py 2> result.txt

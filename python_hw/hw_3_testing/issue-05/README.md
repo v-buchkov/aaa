@@ -1,3 +1,3 @@
-# ISSUE-03
+# ISSUE-05
 ### Команда для запуска:
-> python -m unittest test_one_hot_encoder.py 2> result.txt
+> python -m pytest -q test_what_is_year_now.py --cov=what_is_year_now --cov-report html > result.txt

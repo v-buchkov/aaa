@@ -11,6 +11,11 @@ def test_count_letters():
     res = count_letters(word)
     exp = (10, 2)
     not_exp = (0, 4)
+
+    # Class => creates class first and then runs count_letters(1)
+    with pytest.raises(TypeError):
+        count_letters(1)
+
     assert res == exp, f'input = {word}, expected {exp}, got {res}'
     try:
         assert res == not_exp, word

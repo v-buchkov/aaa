@@ -1,3 +1,6 @@
+import pytest
+
+
 class Pokemon:
     def __init__(self, name: str, poketype: str):
         self.name = name
@@ -7,20 +10,12 @@ class Pokemon:
         return f'{self.name}/{self.poketype}'
 
 
-def test_standard(self):
-    res = Pokemon(name='Bulbasaur', poketype='grass').__str__()
-    exp = 'Bulbasaur/grass'
-    self.assertEqual(res, exp)
-
-
-def test_special_symbols(self):
-    res = Pokemon(name='Pikachu', poketype='electric\r\npower').__str__()
-    exp = 'Pikachu/electric\r\npower'
-    self.assertEqual(res, exp)
-
-
-def test_with_formula(self):
-    res = Pokemon(name='Squirtle', poketype='water' * 30).__str__()
-    exp = 'Squirtle/waterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwater' \
-          'waterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwater'
-    self.assertEqual(res, exp)
+@pytest.mark.parametrize("name,poketype,exp",
+                         [('Bulbasaur', 'grass', 'Bulbasaur/grass'),
+                          ('Pikachu', 'electric\r\npower', 'Pikachu/electric\r\npower'),
+                          ('Squirtle', 'water' * 30, 'Squirtle/waterwaterwaterwaterwaterwaterwaterwaterwaterwaterwater'
+                                                     'waterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwaterwater'
+                                                     'waterwaterwaterwaterwaterwater')])
+def test_pokemon(name, poketype, exp):
+    res = Pokemon(name=name, poketype=poketype).__str__()
+    assert res == exp, f'input: {name, poketype}, expected: {exp}, got: {res}'
