@@ -254,4 +254,3 @@ def test_menu_delivery():
     out = out.split('\n')[:-1]
 
     assert out == expected_output, f'expected: {expected_output}, got: {out}'
-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
